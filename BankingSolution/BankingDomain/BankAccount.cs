@@ -3,11 +3,11 @@
     public class BankAccount
     {
         private decimal _balance = 5000;
-        public void Deposit(decimal amountToDeposit)
+        public virtual void Deposit(decimal amountToDeposit)
         {
            _balance += amountToDeposit;
         }
-        public void Withdraw(decimal amountToWithdrawl)
+        public virtual void Withdraw(decimal amountToWithdrawl)
         {
             if (amountToWithdrawl > _balance)
             {
