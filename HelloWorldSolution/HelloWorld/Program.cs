@@ -1,18 +1,20 @@
-﻿// See https://aka.ms/new-console-template for more information
-using HelloWorld;
+﻿using HelloWorld;
 
-Console.WriteLine("Hello, World!");
-Console.Write("How Many minutes :");
-string? minutes = Console.ReadLine(); 
-if (minutes is not null)
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<DateUtils>();
+var app = builder.Build();
+app.MapGet("/break/{minutes:int}", (int minutes) =>
 {
-    DateUtils utils = new DateUtils();
-    int mins = int.Parse(minutes);
-    DateTime timeAtEndOfBreak =utils.TakeABreak(mins);
-    Console.WriteLine($"ok be back at {timeAtEndOfBreak:T}");
-}
-else
-{
-    Console.WriteLine("Enter number");
+    var utils = new DateUtils();
+    var response = new BreakTimerResponse(
+        minutes,
+        DateTime.Now,
+        utils.TakeABreak(minutes)
+        );
+    return Results.Ok(response);
 
-}
+});
+
+app.Run();
+
+public record BreakTimerResponse(int Minutes, DateTime StartTime, DateTime Endtime);
