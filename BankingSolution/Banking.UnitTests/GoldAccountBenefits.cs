@@ -9,15 +9,20 @@ public class GoldAccountBenefits
     [Fact]
     public void GetBonusOnDeposit()
     {
-        var StubbedBonusCalculator = new Mock<ICalculateBonuses>();
-        var account = new BankAccount(new StubbedBonusCalculator());
-        var openingBalance = account.GetBalance();
-        var amountToDeposit = 100M;
-        var expectedBonus = 10M;
-        StubbedBonusCalculator.Setup(s => s.GetBonusForDepositOn(openingBalance, amountToDeposit)).Returns(expectedBonus);
 
+        // Given
+        var stubbedBonusCalculator = new Mock<ICalculateBonuses>();
+        var account = new BankAccount(stubbedBonusCalculator.Object,
+            new Mock<INotifyAccountReps>().Object);
+        var openingBalance = account.GetBalance();
+        var amountToDeposit = 92.42M;
+        var expectedBonus = 42M;
+        stubbedBonusCalculator.Setup(s => s.GetBonusForDepositOn(openingBalance, amountToDeposit)).Returns(expectedBonus);
+
+        // When
         account.Deposit(amountToDeposit);
 
+        // Then
         Assert.Equal(openingBalance + amountToDeposit + expectedBonus, 
             account.GetBalance());
 
